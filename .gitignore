@@ -1,0 +1,6 @@
+__pycache__
+credentials.py
+runs
+.ipynb_*
+*.csv
+.direnv
