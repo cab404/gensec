@@ -25,7 +25,7 @@
             drv = self.defaultPackage."${system}";
         };
 
-        nixosModule = { config }: with nixpkgs.lib; {
+        nixosModule = { config, ... }: with nixpkgs.lib; {
             options = {
                 services.gensec = {
                     enable = mkEnableOption "enables gensec service, yup.";
