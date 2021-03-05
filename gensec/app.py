@@ -91,7 +91,7 @@ def update_csrf_hls():
         headers={"Accept": "*/*", "language": "En", "chain": "1"},
         cookies=cookies,
     ).text
-    soup = BeautifulSoup(rq, features="html5lib")
+    soup = BeautifulSoup(rq, features="html.parser")
     return soup.find("input", {"name": "_csrf"})["value"]
 
 
