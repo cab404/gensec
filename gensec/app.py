@@ -9,7 +9,20 @@ import requests
 from bs4 import BeautifulSoup
 from pydash import _
 
-from credentials import ete_username, ete_password, cookies, gym_id
+import yaml
+import os
+
+config_path = os.getenv("GENSEC_CONFIG")
+if (config_path == None):
+    print("Set $GENSEC_CONFIG to config path.")
+    exit(1)
+
+config = yaml.safe_load(open(config_path))
+
+ete_username = config["ete_username"]
+ete_password = config["ete_password"]
+cookies = config["cookies"]
+gym_id = config["gym_id"]
 
 
 def add_event(
