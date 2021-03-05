@@ -41,15 +41,15 @@
             config = mkIf config.services.gensec.enable {
                 systemd.services.gensec = {
                     serviceConfig = {
-                        ExecStart = "${self.defaultPackages.x86_64-linux}/bin/gensec";
+                        ExecStart = "${self.defaultPackage."${system}"}/bin/gensec";
                     };
                     environment = {
                         GENSEC_CONFIG = config.services.gensec.config;
                     };
                 };
 
-                systemd.timers.home-locatedb = {
-                    partOf = "gensec.service";
+                systemd.timers.gensec = {
+                    partOf = [ "gensec.service" ];
                     timerConfig = {
                         OnCalendar = "*-*-* 00:00";
                     };
