@@ -12,6 +12,7 @@ icalendar = "^4.0.7"
 pydash = "^4.9.3"
 beautifulsoup4 = "^4.9.3"
 PyYAML = "^5.4.1"
+requests = "^2.25.1"
 
 [tool.poetry.scripts]
 gensec = "gensec.console:main"
