@@ -19,6 +19,40 @@
             preferWheels = true;
         };
 
+        nixosModule.x86_64-linux = { config }: with nixpkgs.lib; {
+            options = {
+                services.gensec = {
+                    enable = mkEnableOption "enables gensec service, yup.";
+                    config = mkOption {
+                        type = types.path;
+                        default = null;
+                        description = ''
+                            Path to secret gensec config.
+                        '';
+                    };
+                };
+            };
+            config = mkIf config.services.gensec.enable {
+                systemd.services.gensec = {
+                    serviceConfig = {
+                        ExecStart = "${self.defaultPackages.x86_64-linux}/bin/gensec";
+                    };
+                    environment = {
+                        GENSEC_CONFIG = config.services.gensec.config;
+                    };
+                };
+
+                systemd.timers.home-locatedb = {
+                    partOf = "gensec.service";
+                    timerConfig = {
+                        OnCalendar = "*-*-* 00:00";
+                    };
+                    wantedBy = [ "timers.target" ];
+                };
+
+            };
+        };
+
     };
 
 }
