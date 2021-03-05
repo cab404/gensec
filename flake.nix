@@ -14,6 +14,11 @@
             ];
         };
 
+        defaultPackage.x86_64-linux = with pkgs.poetry2nix; mkPoetryApplication {
+            projectDir = ./.;
+            preferWheels = true;
+        };
+
     };
 
 }
