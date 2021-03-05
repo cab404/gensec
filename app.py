@@ -148,7 +148,7 @@ etesync = etebase.Account.login(etebase.Client("gensec"), ete_username, ete_pass
 print("Fetching WorldClass schedule...")
 start = dt.datetime.now()
 start.replace(hour=0, minute=0, second=0)
-event_list = get_gym_events(start, start + dt.timedelta(days=1))
+event_list = get_gym_events(start, start + dt.timedelta(days=2))
 
 # ===== Write after this line
 
@@ -158,11 +158,50 @@ event_list = get_gym_events(start, start + dt.timedelta(days=1))
 # Call to schedule and add workout to calendar
 # add_workout(event)
 
+# Пн bodypump 10
+# Вт RPM 12
+# Ср bodypump 13
+# Чт RPM 10
+# Пт bodypump 2030, total stretch 2115
+# Сб RPM 1230
+# Вс bodypump 13, total stretch 14
+
+
+def matches(event):
+    start = dt.datetime.fromisoformat(event["startDate"])
+    end = dt.datetime.fromisoformat(event["endDate"])
+    name = event["service"]["name"]
+    weekday = start.weekday()
+
+    if weekday == 0 and start.hour == 10 and name == "BodyPump":
+        return True
+    if weekday == 1 and start.hour == 12 and name == "RPM":
+        return True
+    if weekday == 2 and start.hour == 13 and name == "BodyPump":
+        return True
+    if weekday == 3 and start.hour == 10 and name == "RPM":
+        return True
+
+    if weekday == 4 and start.hour == 20 and name == "BodyPump":
+        return True
+    if weekday == 4 and start.hour == 21 and name == "Total Stretch":
+        return True
+
+
+    if weekday == 5 and start.hour == 12 and name == "RPM":
+        return True
+
+    if weekday == 6 and start.hour == 13 and name == "BodyPump":
+        return True
+    if weekday == 6 and start.hour == 14 and name == "Total Stretch":
+        return True
+
+    return False
+
 (
     _(event_list)
     .filter(lambda a: a["canRecord"] and not a["recorded"])
-    .filter(lambda a: a["service"]["name"] == "BodyPump")
-    .filter(lambda a: dt.datetime.fromisoformat(a["startDate"]).hour < 24)
+    .filter(matches)
     .for_each(add_workout)
     .value()
 )
