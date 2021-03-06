@@ -3,6 +3,7 @@ name = "gensec"
 version = "0.1.0"
 description = ""
 authors = ["Vladimir Serov <me@cab404.ru>"]
+license = "GPL-3.0"
 
 [tool.poetry.dependencies]
 python = "^3.8"
