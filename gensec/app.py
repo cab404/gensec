@@ -23,6 +23,7 @@ ete_username = config["ete_username"]
 ete_password = config["ete_password"]
 cookies = config["cookies"]
 gym_id = config["gym_id"]
+calendar_name = config["calendar_name"] if "calendar_name" in config else "My Calendar" 
 
 
 def add_event(
@@ -31,12 +32,6 @@ def add_event(
     """
     Creates a simple event in etesync calendar
     """
-    cm = etesync.get_collection_manager()
-    collection: etebase.Collection = cm.list(
-        "etebase.vevent"
-    ).data.__next__()  # get the first calendar
-    items = cm.get_item_manager(collection)
-
     cal = ic.Calendar()
     ev = ic.Event(
         summary=title,
@@ -47,8 +42,8 @@ def add_event(
         dtend=ic.vDatetime(end),
     )
     cal.subcomponents.append(ev)
-    item = items.create({}, cal.to_ical())
-    items.batch([item])
+    item = calendar.create({}, cal.to_ical())
+    calendar.batch([item])
 
 
 def clear_generated():
@@ -140,7 +135,7 @@ def add_workout(event):
     print(
         f"Reserving {name} [{start.date()} {start.time()} - {end.time()}] in WorldClass..."
     )
-    reserve(event["docId"])
+    # reserve(event["docId"])
 
     print(
         f"Adding {name} [{start.date()} {start.time()} - {end.time()}] to calendar..."
@@ -156,8 +151,17 @@ def add_workout(event):
 
 print("Updating csrf...")
 csrf = update_csrf_hls()
+
 print("Logging in to EteSync...")
 etesync = etebase.Account.login(etebase.Client("gensec"), ete_username, ete_password)
+collection_manager = etesync.get_collection_manager()
+calendar = (
+    _(collection_manager.list("etebase.vevent").data)
+        .filter(lambda a: a.meta["name"] == calendar_name)
+        .map(collection_manager.get_item_manager)
+        .value()[0]
+)
+
 print("Fetching WorldClass schedule...")
 start = dt.datetime.now()
 start.replace(hour=0, minute=0, second=0)
