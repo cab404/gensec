@@ -135,7 +135,7 @@ def add_workout(event):
     print(
         f"Reserving {name} [{start.date()} {start.time()} - {end.time()}] in WorldClass..."
     )
-    # reserve(event["docId"])
+    reserve(event["docId"])
 
     print(
         f"Adding {name} [{start.date()} {start.time()} - {end.time()}] to calendar..."
