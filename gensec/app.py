@@ -155,12 +155,12 @@ csrf = update_csrf_hls()
 print("Logging in to EteSync...")
 etesync = etebase.Account.login(etebase.Client("gensec"), ete_username, ete_password)
 collection_manager = etesync.get_collection_manager()
-calendar = (
+collection = (
     _(collection_manager.list("etebase.vevent").data)
         .filter(lambda a: a.meta["name"] == calendar_name)
-        .map(collection_manager.get_item_manager)
         .value()[0]
 )
+calendar = collection_manager.get_item_manager(collection)
 
 print("Fetching WorldClass schedule...")
 start = dt.datetime.now()
@@ -222,3 +222,5 @@ def matches(event):
     .for_each(add_workout)
     .value()
 )
+
+collection_manager.upload(collection)
