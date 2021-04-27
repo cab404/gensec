@@ -23,7 +23,7 @@ ete_username = config["ete_username"]
 ete_password = config["ete_password"]
 cookies = config["cookies"]
 gym_id = config["gym_id"]
-calendar_name = config["calendar_name"] if "calendar_name" in config else "My Calendar" 
+calendar_uid = config["calendar_uid"]
 
 
 def add_event(
@@ -157,7 +157,7 @@ etesync = etebase.Account.login(etebase.Client("gensec"), ete_username, ete_pass
 collection_manager = etesync.get_collection_manager()
 calendar = (
     _(collection_manager.list("etebase.vevent").data)
-        .filter(lambda a: a.meta["name"] == calendar_name)
+        .filter(lambda a: a.uid == calendar_uid)
         .map(collection_manager.get_item_manager)
         .value()[0]
 )
